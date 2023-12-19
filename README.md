@@ -1,5 +1,5 @@
 # merlin_ddnspod
-ddnspod supported ipv4 and ipv6 for merlin koolshare
+ddnspod supported ipv4 & ipv6 for merlin koolshare
 
 对于K3来说，tb梅林380.70-X7.9.1就是380终极版。本人认为也是最好用的版本！各种384、386虽然各有好处，但大都不稳定。
 
