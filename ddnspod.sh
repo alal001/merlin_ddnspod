@@ -160,6 +160,7 @@ update)
 	arDdnsCheck ${mainDomain} ${subDomain4} "A"
 	;;
 restart)
+    sleep 60
     stop_ddnspod
     parseDomain
     add_ddnspod_cru
