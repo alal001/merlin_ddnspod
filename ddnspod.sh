@@ -146,8 +146,6 @@ start)
         add_ddnspod_cru
         sleep $ddnspod_delay_time
         arDdnsCheck ${mainDomain} ${subDomain4} "A"
-        sleep 10
-        #arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
 	else
 		logger "[软件中心]: ddnspod未设置开机启动，跳过！"
 	fi
@@ -160,8 +158,6 @@ update)
 	#此处为定时脚本设计
 	parseDomain
 	arDdnsCheck ${mainDomain} ${subDomain4} "A"
-    sleep 10
-    #arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
 	;;
 restart)
     stop_ddnspod
@@ -169,8 +165,6 @@ restart)
     add_ddnspod_cru
     sleep $ddnspod_delay_time
     arDdnsCheck ${mainDomain} ${subDomain4} "A"
-    sleep 10
-    #arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
 	write_ddnspod_version
 	;;
 *)
