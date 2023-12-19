@@ -5,7 +5,7 @@ ddnspod supported ipv4 & ipv6 for merlin koolshare
 
 软件中心自带原ddnspod 0.1.6只有ipv4解析，所以自己动手改一个出来用。改动如图：
 
-![29761FA9](https://github.com/alal001/merlin_ddnspod/assets/39854347/fa3b40d1-3c70-4916-89ac-aea7843fa7e0)
+![29761FA9](https://github.com/alal001/merlin_ddnspod/assets/39854347/ad69d012-8fa8-41d6-a5a7-4b0b8f472fa7)
 
 一、使用方法：
 
