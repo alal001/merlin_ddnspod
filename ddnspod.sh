@@ -4,17 +4,21 @@ source /koolshare/scripts/base.sh
 eval `dbus export ddnspod`
 alias echo_date='echo 【$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X)】:'
 # ====================================函数定义====================================
-# 获得外网地址 nvram适用有动态ip4的（但可能受小猫影响得不到地址）。curl适用nat的大内网，不过这个ddns没意义
+# 获得外网地址 nvram适用有动态ip4的（但可能受小猫影响得不到地址）。
+# ip addr show可以得到本地wan口地址，大内网会得到一个没用的保留地址。
+# curl适用nat的大内网，可以得到一个公网地址，但这是你的大内网出口，这个ddns也没意义
 # 参数: record_type   区分ipv6 或 ipv4
 arIpAdress() {
     local record_type=${1}
     if [ "${record_type}" == "A" ]; then
-        local inter=$(curl -s whatismyip.akamai.com)
+        #local inter=$(curl -s whatismyip.akamai.com)
         #local inter=$(nvram get wan0_realip_ip)
+        local inter=$(ip addr show ppp0|grep 'global ppp0'| awk -F' ' '{print $2}')
         echo $inter
     else
         # 获得外网IPv6地址,一般ipv6没有nat 直接用本机的
-        echo "`ifconfig $(nvram get wan0_ifname_t) | awk '/Global/{print $3}' | awk -F/ '{print $1}' | awk 'NR==1'`"
+        #echo "`ifconfig $(nvram get wan0_ifname_t) | awk '/Global/{print $3}' | awk -F/ '{print $1}' | awk 'NR==1'`"
+        echo "`ip addr show br0 |grep "global"| awk -F/ '{print $1}' | awk -F' ' '{print $2}' | awk 'NR==2'`"
     fi
 }
 
