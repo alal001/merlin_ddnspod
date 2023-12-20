@@ -87,6 +87,11 @@ arDdnsUpdate() {
     errMsg=$(echo $recordRS | sed 's/.*,"message":"\([^"]*\)".*/\1/')
     dbus set ddnspod_run_status="失败，错误代码：$errMsg"
     echo $errMsg
+    sleep 10
+        if [ ${isFirst} == 1 ]; then
+            isFirst=0
+            arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
+        fi
 }
 
 # 检查ip信息
@@ -104,10 +109,20 @@ arDdnsCheck() {
 		echo "postRS: ${postRS}"
 		if [ $? -ne 1 ]; then
 			dbus set ddnspod_run_status="wan ip：${hostIP} 更新失败，原因：${postRS}"
+            sleep 10
+            if [ ${isFirst} == 1 ]; then
+                isFirst=0
+                arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
+            fi
 		    return 1
 		fi
 	else
 		dbus set ddnspod_run_status="`echo_date` wan ip：${hostIP} 未改变，无需更新"
+        sleep 10
+        if [ ${isFirst} == 1 ]; then
+            isFirst=0
+            arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
+        fi
 	fi
 	return 0
 }
@@ -160,12 +175,12 @@ update)
 	arDdnsCheck ${mainDomain} ${subDomain4} "A"
 	;;
 restart)
-    sleep 60
+    sleep 10
     stop_ddnspod
     parseDomain
     add_ddnspod_cru
     sleep $ddnspod_delay_time
-    #arDdnsCheck ${mainDomain} ${subDomain4} "A"
+    arDdnsCheck ${mainDomain} ${subDomain4} "A"
 	write_ddnspod_version
 	;;
 *)
