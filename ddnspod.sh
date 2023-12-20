@@ -80,15 +80,18 @@ arDdnsUpdate() {
     if [ "$recordCD" == "1" ]; then
         echo $recordRS | sed 's/.*,"value":"\([0-9\.]*\)".*/\1/'
         dbus set ddnspod_run_status="`echo_date` ${2}更新成功，wan ip：${myIP}"
-        if [ ${record_type} == "A" ]; then
-            echo "${myIP}" > /tmp/ip4
-        else
-            echo "${myIP}" > /tmp/ip6
-        fi
+        writeIP $myIP $record_type
         sleep 10
         if [ ${isFirst} == 1 ]; then
             isFirst=0
             arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
+        fi
+        # 重启dnsmasq，清楚本机对域名解析的缓存，只对小猫做了判断
+        local isClashEnable=`dbus get merlinclash_enable`
+        if [ $isClashEnable -eq 1 ]; then
+            /koolshare/scripts/clash_dnsmasqrestart.sh
+        else
+            service restart_dnsmasq
         fi
         return 1
     fi
@@ -97,10 +100,10 @@ arDdnsUpdate() {
     dbus set ddnspod_run_status="失败，错误代码：$errMsg"
     echo $errMsg
     sleep 10
-        if [ ${isFirst} == 1 ]; then
-            isFirst=0
-            arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
-        fi
+    if [ ${isFirst} == 1 ]; then
+        isFirst=0
+        arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
+    fi
 }
 
 # 检查ip信息
@@ -127,6 +130,7 @@ arDdnsCheck() {
 		fi
 	else
 		dbus set ddnspod_run_status="`echo_date` wan ip：${hostIP} 未改变，无需更新"
+        writeIP $hostIP $record_type
         sleep 10
         if [ ${isFirst} == 1 ]; then
             isFirst=0
@@ -146,6 +150,18 @@ checkLocal() {
         return 1
     else
         return 0
+    fi
+}
+
+# ip写入文件 参数: myip record_type
+writeIP() {
+    local myIP record_type
+    myIP=$1
+    record_type=$2
+    if [ ${record_type} == "A" ]; then
+        echo "${myIP}" > /tmp/ip4
+    else
+        echo "${myIP}" > /tmp/ip6
     fi
 }
 
