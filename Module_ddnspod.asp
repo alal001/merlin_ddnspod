@@ -324,9 +324,9 @@
 										    <th width="35%">刷新时间（分）</th>
 										<td>
 										<select id="ddnspod_refresh_time" name="ddnspod_refresh_time" class="input_option"  >
-										<option value="10">10M</option>
+										<option value="5">5M</option>
+										<option value="15">15M</option>
 										<option value="30">30M</option>
-										<option value="60">60M</option>
 										</select>
 										</td>
 										</tr>

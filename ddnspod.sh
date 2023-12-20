@@ -80,6 +80,11 @@ arDdnsUpdate() {
     if [ "$recordCD" == "1" ]; then
         echo $recordRS | sed 's/.*,"value":"\([0-9\.]*\)".*/\1/'
         dbus set ddnspod_run_status="`echo_date` ${2}更新成功，wan ip：${myIP}"
+        if [ ${record_type} == "A" ]; then
+            echo "${myIP}" > /tmp/ip4
+        else
+            echo "${myIP}" > /tmp/ip6
+        fi
         sleep 10
         if [ ${isFirst} == 1 ]; then
             isFirst=0
@@ -131,6 +136,19 @@ arDdnsCheck() {
 	return 0
 }
 
+checkLocal() {
+    local lastIP4 lastIP6 hostIP4 hostIP6
+    hostIP4=$(arIpAdress "A")
+    hostIP6=$(arIpAdress "AAAA")
+    lastIP4=`cat /tmp/ip4`
+    lastIP6=`cat /tmp/ip6`
+    if [ "$hostIP4" == "$lastIP4" ] && [ "$lastIP6" == "$hostIP6" ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
 parseDomain() {
     isFirst=1
 	mainDomain=${ddnspod_config_domain}
@@ -161,6 +179,9 @@ start)
 	#此处为开机自启动设计
 	if [ "$ddnspod_enable" == "1" ]  && [ "$ddnspod_auto_start" == "1" ];then
 		logger "[软件中心]: 启动ddnspod！"
+        dbus set ddnspod_run_status=0
+        touch /tmp/ip4
+        touch /tmp/ip6
         parseDomain
         add_ddnspod_cru
         sleep $ddnspod_delay_time
@@ -184,7 +205,12 @@ restart)
     parseDomain
     add_ddnspod_cru
     sleep $ddnspod_delay_time
-    arDdnsCheck ${mainDomain} ${subDomain4} "A"
+    checkLocal
+    if [ $? -eq 1 ]; then
+        dbus set ddnspod_run_status="`echo_date` wan ip4 & ip6 未改变，无需更新"
+    else
+        arDdnsCheck ${mainDomain} ${subDomain4} "A"
+    fi
 	write_ddnspod_version
 	;;
 *)
