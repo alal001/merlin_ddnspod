@@ -120,8 +120,8 @@ parseDomain() {
 }
 
 add_ddnspod_cru(){
-	sed -i '/ddnspod/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
-	cru a ddnspod "*/$ddnspod_refresh_time * * * * /koolshare/scripts/ddnspod_config.sh update"
+    sed -i '/ddnspod/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
+    cru a ddnspod "*/$ddnspod_refresh_time * * * * /koolshare/scripts/ddnspod_config.sh update"
 }
 
 stop_ddnspod(){
@@ -165,7 +165,7 @@ restart)
     parseDomain
     add_ddnspod_cru
     sleep $ddnspod_delay_time
-    arDdnsCheck ${mainDomain} ${subDomain4} "A"
+    #arDdnsCheck ${mainDomain} ${subDomain4} "A"
 	write_ddnspod_version
 	;;
 *)
