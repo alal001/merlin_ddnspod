@@ -140,6 +140,7 @@ arDdnsCheck() {
 	return 0
 }
 
+# 为避免服务器因访问过于频繁而限制，增加本地验证，不要手动将服务器的解析设置成一个不正确的地址！
 checkLocal() {
     local lastIP4 lastIP6 hostIP4 hostIP6
     hostIP4=$(arIpAdress "A")
