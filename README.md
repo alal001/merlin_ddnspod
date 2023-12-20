@@ -32,8 +32,6 @@ ddnspod supported ipv4 & ipv6 for merlin koolshare
     
     5、试用本程序虽不会冒烟着火，但你得有最坏可能恢复出厂设置的准备，请做好jffs、插件及系统设置备份！
 
-    6、
-
 三、更新说明
 
     2023.12.19：（version 0.1.7）
