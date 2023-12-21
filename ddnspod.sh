@@ -1,5 +1,5 @@
 #!/bin/sh
-version="0.1.8"
+version="0.1.9"
 source /koolshare/scripts/base.sh
 eval `dbus export ddnspod`
 alias echo_date='echo 【$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X)】:'
@@ -84,7 +84,8 @@ arDdnsUpdate() {
         sleep 10
         if [ ${isFirst} == 1 ]; then
             isFirst=0
-            arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
+            local ip6=$(arIpAdress "AAAA")
+            arDdnsUpdate ${mainDomain} ${subDomain6} $ip6 "AAAA"
         fi
         # 重启dnsmasq，清楚本机对域名解析的缓存，只对小猫做了判断
         local isClashEnable=`dbus get merlinclash_enable`
@@ -196,7 +197,8 @@ start)
 	#此处为开机自启动设计
 	if [ "$ddnspod_enable" == "1" ]  && [ "$ddnspod_auto_start" == "1" ];then
 		logger "[软件中心]: 启动ddnspod！"
-        dbus set ddnspod_run_status=0
+        #dbus set ddnspod_run_status=0
+        sleep 60
         touch /tmp/ip4
         touch /tmp/ip6
         parseDomain
@@ -214,6 +216,7 @@ stop | kill )
 update)
 	#此处为定时脚本设计
 	parseDomain
+    sleep $ddnspod_delay_time
 	arDdnsCheck ${mainDomain} ${subDomain4} "A"
 	;;
 restart)
