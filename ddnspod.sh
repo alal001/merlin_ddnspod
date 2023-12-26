@@ -39,13 +39,13 @@ arNslookup() {
     
     # Output IP
     case "$recordIP" in 
-      [0-9a-f]*)
-        echo $recordIP
-        return 0
+        [0-9a-f]*)
+            echo $recordIP
+            return 0
         ;;
-      *)
-        echo "Get Record Info Failed!"
-        return 1
+        *)
+            echo "Get Record Info Failed!"
+            return 1
         ;;
     esac
 }
@@ -167,6 +167,7 @@ writeIP() {
     fi
 }
 
+# 获取网页信息 isFirst是标记
 parseDomain() {
     isFirst=1
 	mainDomain=${ddnspod_config_domain}
@@ -198,13 +199,14 @@ start)
 	if [ "$ddnspod_enable" == "1" ]  && [ "$ddnspod_auto_start" == "1" ];then
 		logger "[软件中心]: 启动ddnspod！"
         #dbus set ddnspod_run_status=0
-        sleep 60
         touch /tmp/ip4
         touch /tmp/ip6
         parseDomain
-        add_ddnspod_cru
+        #add_ddnspod_cru
         sleep $ddnspod_delay_time
-        arDdnsCheck ${mainDomain} ${subDomain4} "A"
+        arDdnsCheck ${mainDomain} ${subDomain4} "A" 
+        sleep 60
+        add_ddnspod_cru
 	else
 		logger "[软件中心]: ddnspod未设置开机启动，跳过！"
 	fi

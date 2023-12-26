@@ -52,3 +52,6 @@ ddnspod supported ipv4 & ipv6 for merlin koolshare
         1、增加更新解析后，重启dnsmasq
         2、修复上一版已知bug
         3、改进更新逻辑，可能已经能正常使用了，至少不太可能造成系统崩溃
+
+    2023.12.26：（version 0.2.0）
+        1、改进start 逻辑，可能不会再出莫名奇妙的乱更新
