@@ -1,5 +1,5 @@
 #!/bin/sh
-version="0.1.9"
+version="0.2.0"
 source /koolshare/scripts/base.sh
 eval `dbus export ddnspod`
 alias echo_date='echo 【$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X)】:'
