@@ -81,10 +81,11 @@ arDdnsUpdate() {
         echo $recordRS | sed 's/.*,"value":"\([0-9\.]*\)".*/\1/'
         dbus set ddnspod_run_status="`echo_date` ${2}更新成功，wan ip：${myIP}"
         writeIP $myIP $record_type
-        
+
         local ip6=$(arIpAdress "AAAA")
-        sleep 10
+
         if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+            sleep 10
             isDual=0
             arDdnsUpdate ${mainDomain} ${dualDomain} $ip6 "AAAA"
         fi
@@ -106,8 +107,9 @@ arDdnsUpdate() {
     errMsg=$(echo $recordRS | sed 's/.*,"message":"\([^"]*\)".*/\1/')
     dbus set ddnspod_run_status="失败，错误代码：$errMsg"
     echo $errMsg
-    sleep 10
+    
     if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+        sleep 10
         isDual=0
         arDdnsCheck ${mainDomain} ${dualDomain} "AAAA"
     fi
@@ -133,8 +135,9 @@ arDdnsCheck() {
 		echo "postRS: ${postRS}"
 		if [ $? -ne 1 ]; then
 			dbus set ddnspod_run_status="wan ip：${hostIP} 更新失败，原因：${postRS}"
-            sleep 10
+            
             if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+                sleep 10
                 isDual=0
                 arDdnsCheck ${mainDomain} ${dualDomain} "AAAA"
             fi
@@ -148,8 +151,8 @@ arDdnsCheck() {
 	else
 		dbus set ddnspod_run_status="`echo_date` wan ip：${hostIP} 未改变，无需更新"
         writeIP $hostIP $record_type
-        sleep 10
         if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+            sleep 10
             isDual=0
             arDdnsCheck ${mainDomain} ${dualDomain} "AAAA"
         fi
@@ -231,7 +234,7 @@ start)
         #add_ddnspod_cru
         sleep $ddnspod_delay_time
         arDdnsCheck ${mainDomain} ${subDomain4} "A" 
-        sleep 60
+        sleep 120
         add_ddnspod_cru
 	else
 		logger "[软件中心]: ddnspod未设置开机启动，跳过！"
