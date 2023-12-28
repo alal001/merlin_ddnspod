@@ -81,6 +81,8 @@ arDdnsUpdate() {
         echo $recordRS | sed 's/.*,"value":"\([0-9\.]*\)".*/\1/'
         dbus set ddnspod_run_status="`echo_date` ${2}更新成功，wan ip：${myIP}"
         writeIP $myIP $record_type
+        
+        local ip6=$(arIpAdress "AAAA")
         sleep 10
         if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
             isDual=0
@@ -89,7 +91,6 @@ arDdnsUpdate() {
         sleep 10
         if [ ${isFirst} == 1 ] && [ "${subDomain6}" != "" ]; then
             isFirst=0
-            local ip6=$(arIpAdress "AAAA")
             arDdnsUpdate ${mainDomain} ${subDomain6} $ip6 "AAAA"
         fi
         # 重启dnsmasq，清楚本机对域名解析的缓存，只对小猫做了判断
