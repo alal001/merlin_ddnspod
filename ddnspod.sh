@@ -1,5 +1,5 @@
 #!/bin/sh
-version="0.2.0"
+version="0.3.0"
 source /koolshare/scripts/base.sh
 eval `dbus export ddnspod`
 alias echo_date='echo 【$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X)】:'
@@ -82,7 +82,12 @@ arDdnsUpdate() {
         dbus set ddnspod_run_status="`echo_date` ${2}更新成功，wan ip：${myIP}"
         writeIP $myIP $record_type
         sleep 10
-        if [ ${isFirst} == 1 ]; then
+        if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+            isDual=0
+            arDdnsUpdate ${mainDomain} ${dualDomain} $ip6 "AAAA"
+        fi
+        sleep 10
+        if [ ${isFirst} == 1 ] && [ "${subDomain6}" != "" ]; then
             isFirst=0
             local ip6=$(arIpAdress "AAAA")
             arDdnsUpdate ${mainDomain} ${subDomain6} $ip6 "AAAA"
@@ -101,7 +106,12 @@ arDdnsUpdate() {
     dbus set ddnspod_run_status="失败，错误代码：$errMsg"
     echo $errMsg
     sleep 10
-    if [ ${isFirst} == 1 ]; then
+    if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+        isDual=0
+        arDdnsCheck ${mainDomain} ${dualDomain} "AAAA"
+    fi
+    sleep 10
+    if [ ${isFirst} == 1 ] && [ "${subDomain6}" != "" ]; then
         isFirst=0
         arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
     fi
@@ -123,7 +133,12 @@ arDdnsCheck() {
 		if [ $? -ne 1 ]; then
 			dbus set ddnspod_run_status="wan ip：${hostIP} 更新失败，原因：${postRS}"
             sleep 10
-            if [ ${isFirst} == 1 ]; then
+            if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+                isDual=0
+                arDdnsCheck ${mainDomain} ${dualDomain} "AAAA"
+            fi
+            sleep 10
+            if [ ${isFirst} == 1 ] && [ "${subDomain6}" != "" ]; then
                 isFirst=0
                 arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
             fi
@@ -133,7 +148,12 @@ arDdnsCheck() {
 		dbus set ddnspod_run_status="`echo_date` wan ip：${hostIP} 未改变，无需更新"
         writeIP $hostIP $record_type
         sleep 10
-        if [ ${isFirst} == 1 ]; then
+        if [ ${isDual} == 1 ] && [ "${dualDomain}" != "" ]; then
+            isDual=0
+            arDdnsCheck ${mainDomain} ${dualDomain} "AAAA"
+        fi
+        sleep 10
+        if [ ${isFirst} == 1 ] && [ "${subDomain6}" != "" ]; then
             isFirst=0
             arDdnsCheck ${mainDomain} ${subDomain6} "AAAA"
         fi
@@ -170,9 +190,14 @@ writeIP() {
 # 获取网页信息 isFirst是标记
 parseDomain() {
     isFirst=1
+    isDual=${ddnspod_delay_time}
 	mainDomain=${ddnspod_config_domain}
 	subDomain4=${ddnspod_config_old_pwd}
     subDomain6=${ddnspod_config_uname}
+    dualDomain=""
+    if [ $isDual == 1 ]; then
+        dualDomain=$subDomain4
+    fi
 }
 
 add_ddnspod_cru(){

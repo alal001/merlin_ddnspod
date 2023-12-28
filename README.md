@@ -55,3 +55,7 @@ ddnspod supported ipv4 & ipv6 for merlin koolshare
 
     2023.12.26：（version 0.2.0）
         1、改进start 逻辑，可能不会再出莫名奇妙的乱更新
+
+    2023.12.28：（version 0.3.0）
+        1、改进程序逻辑，尽量避免用户填写不正确引发错误
+        2、支持双栈配置，可同时为ipv4子域名配置ipv6的同名解析

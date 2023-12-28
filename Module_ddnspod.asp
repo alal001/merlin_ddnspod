@@ -258,7 +258,7 @@
 										<th width="35%">IPv4 子域名</th>
 										<td>
 										<input  type="text" class="input_ss_table" style="width:auto;" size="30"  id="ddnspod_config_old_pwd" name="ddnspod_config_old_pwd" maxlength="50" placeholder="类似：www" value='<% dbus_get_def("ddnspod_config_old_pwd", ""); %>' />
-										<div class="formfontdesc" style="margin-left:270px;margin-top:-20px;margin-bottom:0px;color:rgb(255,204,0);">支持@写法</div>
+										<div class="formfontdesc" style="margin-left:270px;margin-top:-20px;margin-bottom:0px;color:rgb(255,204,0);">支持@，不能为空</div>
 										</td>
 										</tr>
 										<tr>
@@ -305,13 +305,14 @@
 										</tr>
 
 		                                    	    <tr>
-										    <th width="35%">启动延时（秒）</th>
+										    <th width="35%">为ipv4子域名配置双栈</th>
 										<td>
 										<select id="ddnspod_delay_time" name="ddnspod_delay_time" class="input_option"  >
-										<option value="1">1S</option>
-										<option value="5">5S</option>
-										<option value="10">10S</option>
+										<option value="0">否</option>
+										<option value="1">是</option>
+
 										</select>
+										<div class="formfontdesc" style="margin-left:50px;margin-top:-20px;margin-bottom:0px;color:rgb(255,204,0);">需在dnspod设置与ipv4子域名同名的AAAA解析</div>
 										</td>
 										</tr>
 
