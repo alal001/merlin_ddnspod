@@ -234,7 +234,7 @@ start)
         #add_ddnspod_cru
         sleep $ddnspod_delay_time
         arDdnsCheck ${mainDomain} ${subDomain4} "A" 
-        sleep 120
+        sleep 10
         add_ddnspod_cru
 	else
 		logger "[软件中心]: ddnspod未设置开机启动，跳过！"
