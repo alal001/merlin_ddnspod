@@ -194,7 +194,8 @@ writeIP() {
 # 获取网页信息 isFirst是标记
 parseDomain() {
     isFirst=1
-    isDual=${ddnspod_delay_time}
+    local _tmp=${ddnspod_delay_time}
+    isDual=${_tmp}
 	mainDomain=${ddnspod_config_domain}
 	subDomain4=${ddnspod_config_old_pwd}
     subDomain6=${ddnspod_config_uname}
